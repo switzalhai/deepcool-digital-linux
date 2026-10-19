@@ -9,6 +9,7 @@ pub mod ld_series;
 pub mod lp_series;
 pub mod lq_series;
 pub mod ls_series;
+pub mod sk620v;
 
 use crate::error;
 use std::{process::exit, time::Duration};
@@ -17,6 +18,8 @@ use hidapi::HidDevice;
 pub const DEFAULT_VENDOR_ID: u16 = 13875;
 pub const CH510_VENDOR_ID: u16 = 13523;
 pub const CH510_PRODUCT_ID: u16 = 4352;
+pub const SK620V_VENDOR_ID: u16 = 14364;
+pub const SK620V_PRODUCT_ID: u16 = 4;
 
 pub const AUTO_MODE_INTERVAL: Duration = Duration::from_millis(5000);
 

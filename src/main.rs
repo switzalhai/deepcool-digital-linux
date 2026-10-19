@@ -110,6 +110,7 @@ fn main() {
         error!(err);
         exit(1);
     });
+    let mut vendor_id = DEFAULT_VENDOR_ID;
     let mut product_id = 0;
     for device in api.device_list() {
         if device.vendor_id() == DEFAULT_VENDOR_ID {
@@ -122,6 +123,13 @@ fn main() {
             if args.pid == 0 || device.product_id() == args.pid {
                 product_id = device.product_id();
                 println!("Device found: {}", "CH510-MESH-DIGITAL".bright_green());
+                break;
+            }
+        } else if device.vendor_id() == SK620V_VENDOR_ID && device.product_id() == SK620V_PRODUCT_ID {
+            if args.pid == 0 || device.product_id() == args.pid {
+                vendor_id = SK620V_VENDOR_ID;
+                product_id = device.product_id();
+                println!("Device found: {}", device.product_string().unwrap().bright_green());
                 break;
             }
         }
@@ -141,6 +149,29 @@ fn main() {
 
     // Connect to device and send datastream
     match product_id {
+        // Sudokoo SK620V (shares its PID with the AK Series)
+        SK620V_PRODUCT_ID if vendor_id == SK620V_VENDOR_ID => {
+            println!("Supported modes: {}", "auto".bold());
+            // Connect to device
+            let sk_device = devices::sk620v::Display::new(cpu, args.update, args.fahrenheit);
+            // Print current configuration & warnings
+            print_device_status(
+                &sk620v::DEFAULT_MODE,
+                None,
+                None,
+                None,
+                if args.fahrenheit { TemperatureUnit::Fahrenheit } else { TemperatureUnit::Celsius },
+                Alarm { state: AlarmState::NotSupported, temp_limit: 0, temp_warning: 0 },
+                args.update,
+            );
+            common_warnings::mode_change(&args);
+            common_warnings::secondary_mode(&args);
+            common_warnings::alarm(&args);
+            common_warnings::rotate(&args);
+            common_warnings::lead_zeros(&args);
+            // Display loop
+            sk_device.run(&api, SK620V_VENDOR_ID, product_id);
+        }
         // AK Series
         1..=4 => {
             println!("Supported modes: {} [default: {}]", "auto cpu_temp cpu_usage".bold(), ak_series::DEFAULT_MODE.symbol());

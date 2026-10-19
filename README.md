@@ -50,6 +50,9 @@ SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3633", MODE="0666"
 
 # CH510 MESH DIGITAL
 SUBSYSTEM=="hidraw", ATTRS{idVendor}=="34d3", ATTRS{idProduct}=="1100", MODE="0666"
+
+# Sudokoo SK620V
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="381c", ATTRS{idProduct}=="0004", MODE="0666"
 ```
 4. Reboot your computer
 
@@ -92,6 +95,9 @@ This is an alternative to using paths such as `udev.d` that you might be used to
 
     # CH510 MESH DIGITAL
     SUBSYSTEM=="hidraw", ATTRS{idVendor}=="34d3", ATTRS{idProduct}=="1100", MODE="0666"
+
+    # Sudokoo SK620V
+    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="381c", ATTRS{idProduct}=="0004", MODE="0666"
   '';
 }
 ```
